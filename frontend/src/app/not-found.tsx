@@ -1,0 +1,1 @@
+import Link from 'next/link';export default function NotFound(){return <main className="center-page"><span className="eyebrow">404 / LOST IN SPACE</span><h1>PAGE NOT FOUND</h1><p>The route you requested drifted beyond this portfolio.</p><Link className="button primary" href="/">RETURN HOME</Link></main>}
