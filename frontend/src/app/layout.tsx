@@ -18,9 +18,52 @@ const aquire = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Muhammad Haris — Software Engineer',
-  description: 'Portfolio of Muhammad Haris, a MERN Stack Developer and Backend Engineer building dependable full-stack products.',
-  openGraph: { title: 'Muhammad Haris — Software Engineer', description: 'MERN Stack Developer, Backend Engineer, and builder of scalable software.', type: 'website' },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://muhammad-haris.vercel.app'),
+  title: 'Muhammad Haris — Software Engineer & Full-Stack Developer',
+  description: 'Portfolio of Muhammad Haris, a Software Engineer, MERN Stack Developer, and Backend Engineer specializing in scalable web applications, REST APIs, and modern frontend architecture.',
+  keywords: [
+    'Muhammad Haris',
+    'Software Engineer',
+    'MERN Stack Developer',
+    'Backend Engineer',
+    'Full Stack Developer',
+    'Next.js Developer',
+    'NestJS Developer',
+    'Node.js Developer',
+    'Portfolio',
+    'Web Developer',
+  ],
+  authors: [{ name: 'Muhammad Haris', url: 'https://github.com/Haris-261' }],
+  creator: 'Muhammad Haris',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: '/',
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'google-site-verification-code',
+  },
+  openGraph: {
+    title: 'Muhammad Haris — Software Engineer & Full-Stack Developer',
+    description: 'Portfolio of Muhammad Haris, a Software Engineer, MERN Stack Developer, and Backend Engineer building dependable full-stack products.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Muhammad Haris Portfolio',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Muhammad Haris — Software Engineer',
+    description: 'Portfolio of Muhammad Haris, a Software Engineer, MERN Stack Developer, and Backend Engineer.',
+  },
 };
 
 export const viewport: Viewport = {

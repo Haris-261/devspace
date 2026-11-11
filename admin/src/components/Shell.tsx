@@ -59,7 +59,10 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   }, [open]);
 
   async function logout() {
-    await api('/auth/logout', { method: 'POST' });
+    await api('/auth/logout', { method: 'POST' }).catch(() => {});
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('admin_token');
+    }
     router.replace('/login');
   }
 
