@@ -18,6 +18,9 @@ const aquire = localFont({
   weight: '400',
 });
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://muhammad-haris.vercel.app'),
   title: 'Muhammad Haris — Software Engineer & Full-Stack Developer',
@@ -82,6 +85,14 @@ export default async function Layout({ children }: { children: React.ReactNode }
     ? portfolio.profile.loaderWords
     : ['Plan', 'Design', 'Develop', 'Innovate'];
 
+  // Split fullName into first + rest for bold/accent styling
+  const fullName = portfolio?.profile?.fullName || 'Muhammad Haris';
+  const nameParts = fullName.trim().split(' ');
+  const firstName = nameParts[0] || 'Muhammad';
+  const lastName = nameParts.slice(1).join(' ') || 'Haris';
+
+  const loaderSubtitle = portfolio?.profile?.loaderSubtitle || 'PERSONAL PORTFOLIO';
+
   const sparks = Array.from({ length: 70 }, (_, i) => ({
     left: `${(bootUnit(i, 1) * 100).toFixed(3)}%`,
     delay: `${(bootUnit(i, 2) * 1.2).toFixed(3)}s`,
@@ -101,8 +112,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
             ))}
           </div>
           <div className="loader-center">
-            <h1><b>Muhammad</b> <span>Haris</span></h1>
-            <div className="loader-sub"><i /> PERSONAL PORTFOLIO <i /></div>
+            <h1><b>{firstName}</b> <span>{lastName}</span></h1>
+            <div className="loader-sub"><i /> {loaderSubtitle.trim().toUpperCase()} <i /></div>
             <div className="loader-track"><span className="boot-fill" /></div>
             <div id="loader-steps" className="loader-steps" suppressHydrationWarning>
               {serverWords.map((x, i) => (
