@@ -1,7 +1,7 @@
 'use client';
 import {useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {ArrowRight,ArrowUpRight,BrainCircuit,CalendarDays,Code2,Github,Lightbulb,Linkedin,Mail,Send,Trophy} from 'lucide-react';
-import type {PortfolioData, Skill} from '@/lib/types';
+import type {PortfolioData, Profile, Skill} from '@/lib/types';
 import {sendMessage} from '@/lib/api';
 import {resolveSkillIcon} from '@/lib/skillIcons';
 import {UI_ICONS, getNavIcon, getSocialIcon} from '@/lib/icons';
@@ -380,6 +380,7 @@ function SkillsMarqueeSection({ skills }: { skills: Skill[] }) {
 }
 
 export default function Portfolio({data}:{data:PortfolioData}){
+  const [portfolio, setPortfolio] = useState<PortfolioData>(data);
   const [active,setActive]=useState('home');
   const [loading,setLoading]=useState(true);
   const [isScrolled,setIsScrolled]=useState(false);
@@ -389,7 +390,27 @@ export default function Portfolio({data}:{data:PortfolioData}){
   const progressBarRef=useRef<HTMLDivElement>(null);
   const menuBtnRef=useRef<HTMLButtonElement>(null);
   const menuPanelRef=useRef<HTMLDivElement>(null);
-  const headlines=useMemo(()=>Array.from(new Set([...data.profile.heroHeadlines.filter(x=>x.toUpperCase()!=='BACKEND ENGINEER'),'AI DEVELOPER'])),[data.profile.heroHeadlines]);
+
+  useEffect(() => {
+    const apiBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').replace(/\/+$/, '');
+    fetch(`${apiBase}/portfolio`, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((fresh) => {
+        if (fresh && fresh.profile) {
+          setPortfolio(fresh);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const profile = portfolio.profile;
+
+  const headlines = useMemo(() => {
+    if (Array.isArray(profile?.heroHeadlines) && profile.heroHeadlines.length > 0) {
+      return profile.heroHeadlines.map(x => String(x).trim()).filter(Boolean);
+    }
+    return ['SOFTWARE ENGINEER', 'FULL STACK DEVELOPER', 'AI DEVELOPER'];
+  }, [profile?.heroHeadlines]);
 
   useEffect(() => {
     const onResize = () => {
@@ -751,7 +772,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
           </nav>
           <hr className="menu-divider" />
           <div className="menu-social-row">
-            {data.socialLinks.filter(s => s.enabled).map(s => {
+            {portfolio.socialLinks.filter(s => s.enabled).map(s => {
               const SocialIcon = getSocialIcon(s.icon || s.url || s.label);
               return (
                 <a
@@ -785,9 +806,9 @@ export default function Portfolio({data}:{data:PortfolioData}){
           <div className="float-icon trophy"><Trophy/></div>
           <div className="float-icon bulb"><Lightbulb/></div>
           <div className="hero-inner">
-            <p className="welcome">{data.profile.heroIntro}</p>
+            <p className="welcome">{profile?.heroIntro || portfolio.profile.heroIntro}</p>
             <HeroRotator headlines={headlines} loading={loading}/>
-            <h2>{data.profile.fullName}</h2>
+            <h2>{profile?.fullName || portfolio.profile.fullName}</h2>
             <div className="hero-actions">
               <a href="#contact">LET&apos;S CONNECT</a>
               <a href="#projects">VIEW PROJECTS</a>
@@ -797,13 +818,13 @@ export default function Portfolio({data}:{data:PortfolioData}){
         <section id="about" className="page-section about">
           <div className="glass-card glass-card--animated">
             <SectionHeading plain="About Me" accent="BEHIND THE CODE!"/>
-            <p>{data.profile.about}</p>
-            <div className="stat-row">{data.profile.stats.map(x=><div key={x.label}><strong>{x.value}</strong><span>{x.label}</span></div>)}</div>
+            <p>{profile?.about || portfolio.profile.about}</p>
+            <div className="stat-row">{(profile?.stats || portfolio.profile.stats).map(x=><div key={x.label}><strong>{x.value}</strong><span>{x.label}</span></div>)}</div>
           </div>
         </section>
         <section id="experience" className="page-section">
           <SectionHeading plain="Work Experience" accent="PROFESSIONAL JOURNEY!"/>
-          <div className="timeline">{data.experience.map((x,i)=>(
+          <div className="timeline">{portfolio.experience.map((x,i)=>(
             <article className={`experience-card ${i%2?'right':'left'}`} key={x._id}>
               <span className="timeline-number">0{i+1}</span>
               <div className="timeline-node timeline-node--desktop"/>
@@ -823,7 +844,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
         </section>
         <section id="projects" className="page-section">
           <SectionHeading plain="Projects Showcase" accent="WHAT I'VE BUILT!"/>
-          <div className="projects-grid">{data.projects.length?data.projects.map((p,i)=>(
+          <div className="projects-grid">{portfolio.projects.length?portfolio.projects.map((p,i)=>(
             <article className="project-card" key={p._id}>
               <div className="project-meta"><span>{p.featured?'Featured Project':'Full-Stack Project'}</span><b>0{i+1}</b></div>
               <h3>{p.title}</h3>
@@ -833,11 +854,11 @@ export default function Portfolio({data}:{data:PortfolioData}){
             </article>
           )):<div className="empty">Published projects will appear here.</div>}</div>
         </section>
-        <SkillsMarqueeSection skills={data.skills} />
-        <TestimonialsSection testimonials={data.testimonials} />
+        <SkillsMarqueeSection skills={portfolio.skills} />
+        <TestimonialsSection testimonials={portfolio.testimonials} />
         <section id="profiles" className="page-section profiles">
           <SectionHeading plain="Web Presence" accent="DEV NETWORK!"/>
-          <div className="profile-grid">{data.socialLinks.filter(s=>s.enabled).map(s=>{const I=iconMap[s.icon]||ArrowUpRight;return <a key={s._id} href={s.url} target={s.url.startsWith('http')?'_blank':undefined} rel="noopener noreferrer"><I/><strong>{s.label}</strong><span>{s.icon==='github'?'COMMIT':s.icon==='linkedin'?'CONNECT':'CONTACT'}</span></a>;})}</div>
+          <div className="profile-grid">{portfolio.socialLinks.filter(s=>s.enabled).map(s=>{const I=iconMap[s.icon]||ArrowUpRight;return <a key={s._id} href={s.url} target={s.url.startsWith('http')?'_blank':undefined} rel="noopener noreferrer"><I/><strong>{s.label}</strong><span>{s.icon==='github'?'COMMIT':s.icon==='linkedin'?'CONNECT':'CONTACT'}</span></a>;})}</div>
           <p>You can explore further by clicking on any of the profile cards above!</p>
         </section>
         <section id="contact" className="page-section contact">
@@ -847,9 +868,9 @@ export default function Portfolio({data}:{data:PortfolioData}){
         </section>
       </main>
       <Footer
-        profile={data.profile}
-        socialLinks={data.socialLinks}
-        role={data.experience[0]?.role}
+        profile={profile || portfolio.profile}
+        socialLinks={portfolio.socialLinks}
+        role={portfolio.experience[0]?.role}
       />
     </div>
   );

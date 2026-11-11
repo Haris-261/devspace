@@ -5,7 +5,7 @@ const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 export async function getPortfolio(): Promise<PortfolioData> {
   const fallback = await import('./fallback').then((m) => m.default as PortfolioData);
   try {
-    const r = await fetch(`${API}/portfolio`, { next: { revalidate: 60 } });
+    const r = await fetch(`${API}/portfolio`, { cache: 'no-store' });
     if (!r.ok) {
       if (process.env.NODE_ENV !== 'production') {
         console.warn(`[API] getPortfolio failed with status ${r.status}`);
@@ -30,7 +30,7 @@ export async function getPortfolio(): Promise<PortfolioData> {
 
 export async function getTestimonials(): Promise<Testimonial[]> {
   try {
-    const r = await fetch(`${API}/testimonials`, { next: { revalidate: 60 } });
+    const r = await fetch(`${API}/testimonials`, { cache: 'no-store' });
     if (!r.ok) {
       if (process.env.NODE_ENV !== 'production') {
         console.warn(`[API] getTestimonials failed with status ${r.status}`);

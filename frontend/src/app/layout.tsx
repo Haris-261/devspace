@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
+import { getPortfolio } from '@/lib/api';
 import '@fontsource/space-grotesk/400.css';
 import '@fontsource/space-grotesk/500.css';
 import '@fontsource/space-grotesk/700.css';
@@ -75,7 +76,12 @@ function bootUnit(i: number, salt: number) {
   return n - Math.floor(n);
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const portfolio = await getPortfolio().catch(() => null);
+  const serverWords: string[] = portfolio?.profile?.loaderWords?.length
+    ? portfolio.profile.loaderWords
+    : ['Plan', 'Design', 'Develop', 'Innovate'];
+
   const sparks = Array.from({ length: 70 }, (_, i) => ({
     left: `${(bootUnit(i, 1) * 100).toFixed(3)}%`,
     delay: `${(bootUnit(i, 2) * 1.2).toFixed(3)}s`,
@@ -88,7 +94,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <head />
       <body>
         <script dangerouslySetInnerHTML={{ __html: 'window.__bootStart=Date.now()' }} />
-        <div id="boot-loader" className="loader" aria-hidden="true">
+        <div id="boot-loader" className="loader" aria-hidden="true" suppressHydrationWarning>
           <div className="preloader-particles">
             {sparks.map((p, i) => (
               <span key={i} className="preloader-particle" style={{ left: p.left, animationDelay: p.delay, animationDuration: p.duration, width: p.size, height: p.size }} />
@@ -98,8 +104,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <h1><b>Muhammad</b> <span>Haris</span></h1>
             <div className="loader-sub"><i /> PERSONAL PORTFOLIO <i /></div>
             <div className="loader-track"><span className="boot-fill" /></div>
-            <div id="loader-steps" className="loader-steps">
-              {['IDEATE.', 'DESIGN.', 'DEVELOP.', 'INNOVATE.'].map((x, i) => <em style={{ ['--w' as string]: i }} key={x}>{x}</em>)}
+            <div id="loader-steps" className="loader-steps" suppressHydrationWarning>
+              {serverWords.map((x, i) => (
+                <em style={{ ['--w' as string]: i }} key={`${x}-${i}`} suppressHydrationWarning>
+                  {x.trim().toUpperCase().replace(/\.*$/, '')}.
+                </em>
+              ))}
             </div>
           </div>
         </div>
