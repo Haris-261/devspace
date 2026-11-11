@@ -1222,13 +1222,13 @@ a {
 }
 
 .about .glass-card>p {
-  max-width: 720px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   color: #c4bec9;
-  text-align: center;
+  text-align: left;
   font-size: clamp(14px, 1.25vw, 16px);
-  line-height: 1.65;
-  padding: 0 4px;
+  line-height: 1.75;
+  padding: 0;
 }
 
 /* Stat cards — requirement 3 (card border tokens) */
