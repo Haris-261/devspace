@@ -6,8 +6,8 @@
   right: 24px;
   bottom: 24px;
   z-index: 9998;
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,6 +27,8 @@ body.page-loaded .wa-float {
 }
 .wa-float:hover { transform: scale(1.12); color: #f0c8ff; }
 .wa-float svg {
+  width: 42px;
+  height: 42px;
   position: relative;
   z-index: 1;
   fill: currentColor;
@@ -43,5 +45,33 @@ body.page-loaded .wa-float {
 .wa-pulse-2 { animation-delay: 1.2s; }
 @keyframes wa-ring { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(1.7); opacity: 0; } }
 @keyframes wa-enter { from { opacity: 0; transform: translateY(16px) scale(0.6); } to { opacity: 1; transform: none; } }
-@media (max-width: 600px) { .wa-float { right: 14px; bottom: 14px; width: 48px; height: 48px; } }
+@media (max-width: 600px) { .wa-float { right: 14px; bottom: 14px; width: 58px; height: 58px; } .wa-float svg { width: 38px; height: 38px; } }
 @media (prefers-reduced-motion: reduce) { body.page-loaded .wa-float { animation: none; } .wa-pulse { animation: none; opacity: 0; } }
+
+/* Even line lengths: balance wrapping for headings and paragraphs (mobile + desktop).
+   Browsers that don't support text-wrap simply ignore this. */
+h1, h2, h3, h4, h5,
+.welcome,
+.contact-intro,
+.page-section p,
+.footer p,
+footer p {
+  text-wrap: balance;
+}
+/* Long justified paragraph: avoid a lonely last word instead */
+.about .glass-card>p {
+  text-wrap: pretty;
+}
+
+/* Long card text (projects, experience, reviews): balance only works up to a few lines,
+   so justify it for equal line widths on both mobile and desktop (same as the About text). */
+.project-card p,
+.experience-panel p,
+.experience-panel li,
+.testimonial-message {
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: left;
+  hyphens: auto;
+  text-wrap: pretty;
+}
