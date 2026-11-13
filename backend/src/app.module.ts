@@ -43,6 +43,7 @@ import {
   AdminTestimonialsController,
 } from './resources';
 import { UploadController } from './upload';
+import { HealthController } from './health';
 
 @Module({
   imports: [
@@ -118,6 +119,7 @@ import { UploadController } from './upload';
     TestimonialsController,
     AdminTestimonialsController,
     UploadController,
+    HealthController,
   ],
   providers: [
     AuthService,
