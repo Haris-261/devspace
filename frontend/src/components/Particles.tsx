@@ -16,7 +16,7 @@ export default function Particles({ className = '' }: ParticlesProps) {
     if (!ctx) return;
 
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const count = reduced ? 400 : innerWidth < 700 ? 800 : 1200;
+    const count = reduced ? 400 : innerWidth < 700 ? 280 : 650;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < positions.length; i++)positions[i] = (Math.random() - .5) * 100;
 
@@ -63,6 +63,7 @@ export default function Particles({ className = '' }: ParticlesProps) {
     let isRunning = false;
     const draw = () => {
       const loaded = !document.body.classList.contains('is-loading');
+      if (!loaded) return; // loader covers the screen: skip work so hydration/animation stay smooth
       if (!reduced) {
         rotY += .00004 + mouseX * .28;
         rotX += .00002 + mouseY * .28;

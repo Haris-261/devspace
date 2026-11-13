@@ -2,8 +2,7 @@ import { getPortfolio, getTestimonials } from '@/lib/api';
 import Portfolio from '@/components/Portfolio';
 import LoaderWords from '@/components/LoaderWords';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 30;
 
 const DEFAULT_LOADER_WORDS = ['Plan', 'Design', 'Develop', 'Innovate'];
 

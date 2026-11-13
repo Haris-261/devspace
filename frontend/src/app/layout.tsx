@@ -21,8 +21,7 @@ const aquire = localFont({
   weight: '400',
 });
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 30;
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://muhammad-haris.vercel.app'),

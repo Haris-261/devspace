@@ -23,6 +23,9 @@ function createTransport() {
     port,
     secure: port === 465,
     auth: { user, pass },
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 12000,
   });
 }
 
@@ -39,7 +42,7 @@ export async function notifyOwnerOfContact(c: ContactPayload): Promise<void> {
     return;
   }
   try {
-    await transport.sendMail({
+    const info = await transport.sendMail({
       from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
       to,
       replyTo: `"${oneLine(c.name).replace(/"/g, '')}" <${oneLine(c.email)}>`,
@@ -55,6 +58,7 @@ export async function notifyOwnerOfContact(c: ContactPayload): Promise<void> {
         <p style="color:#888;font-size:12px">Hit Reply to answer ${escapeHtml(c.name)} directly.</p>
       </div>`,
     });
+    console.log('[mailer] contact notification sent:', info.messageId);
   } catch (err) {
     console.error('[mailer] failed to send contact notification:', (err as Error).message);
   }

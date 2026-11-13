@@ -2735,7 +2735,6 @@ a {
   filter: none;
   transition: opacity 1s cubic-bezier(.4, 0, .2, 1),
     transform 1s cubic-bezier(.4, 0, .2, 1),
-    filter 1s cubic-bezier(.4, 0, .2, 1),
     visibility 1s;
   position: fixed;
   inset: 0;
@@ -2743,12 +2742,12 @@ a {
   place-items: center;
   overflow: hidden;
   contain: layout paint;
+  will-change: opacity, transform;
 }
 
 .loader.exiting {
   opacity: 0;
-  transform: scale(1.2);
-  filter: blur(20px);
+  transform: scale(1.1);
   visibility: hidden;
   pointer-events: none;
 }
@@ -2860,7 +2859,7 @@ a {
 }
 
 .loader-track .boot-fill {
-  animation: boot-fill 3.2s cubic-bezier(.4, 0, .15, 1) forwards;
+  animation: boot-fill 2s cubic-bezier(.4, 0, .15, 1) forwards;
 }
 
 @keyframes boot-fill {
@@ -2875,8 +2874,7 @@ a {
 
 body.page-loaded #boot-loader {
   opacity: 0;
-  transform: scale(1.12);
-  filter: blur(16px);
+  transform: scale(1.06);
   visibility: hidden;
   pointer-events: none;
 }
@@ -2899,8 +2897,8 @@ body.page-loaded #boot-loader {
   letter-spacing: .18em;
   font-style: normal;
   color: rgba(255, 255, 255, .2);
-  animation: taglineCycle 3.2s ease-in-out infinite;
-  animation-delay: calc(var(--w) * 0.8s);
+  animation: taglineCycle 2s ease-in-out infinite;
+  animation-delay: calc(var(--w) * 0.5s);
 }
 
 @keyframes taglineCycle {

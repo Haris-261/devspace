@@ -434,7 +434,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
     document.body.classList.add('is-loading');
     document.body.classList.remove('page-loaded');
     const started=typeof window!=='undefined'&&(window as Window&{__bootStart?:number}).__bootStart||Date.now();
-    const wait=Math.max(700,3200-(Date.now()-started));
+    const wait=Math.max(700,2000-(Date.now()-started));
     const finishTimer=setTimeout(()=>{
       document.body.classList.remove('is-loading');
       document.body.classList.add('page-loaded');
@@ -854,7 +854,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
           <SectionHeading plain="Projects Showcase" accent="WHAT I'VE BUILT!"/>
           <div className="projects-grid">{portfolio.projects.length?portfolio.projects.map((p,i)=>(
             <article className="project-card" key={p._id}>
-              <div className="project-meta"><span>{p.featured?'Featured Project':'Full-Stack Project'}</span><b>0{i+1}</b></div>
+              <div className="project-meta"><span>{p.featured?'Featured Project':(p.projectType?.trim()||'Full-Stack Project')}</span><b>0{i+1}</b></div>
               <h3>{p.title}</h3>
               <p>{p.description}</p>
               <div className="tech-list">{p.technologies.map(t=><span key={t}>{t}</span>)}</div>
