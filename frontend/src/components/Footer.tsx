@@ -8,6 +8,7 @@ interface FooterProps {
   profile: Profile;
   socialLinks: Social[];
   role?: string;
+  hiddenSections?: string[];
 }
 
 const navLinks = [
@@ -20,7 +21,7 @@ const navLinks = [
   { id: 'contact', label: 'Contact' },
 ];
 
-export default function Footer({ profile, socialLinks, role }: FooterProps) {
+export default function Footer({ profile, socialLinks, role, hiddenSections = [] }: FooterProps) {
   const footerRef = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -88,7 +89,7 @@ export default function Footer({ profile, socialLinks, role }: FooterProps) {
             <h5 className="footer-col-title">QUICK LINKS</h5>
             <nav aria-label="Footer">
               <ul className="footer-links-list">
-                {navLinks.map((link) => (
+                {navLinks.filter((link) => !hiddenSections.includes(link.id)).map((link) => (
                   <li key={link.id}>
                     <a
                       href={`#${link.id}`}

@@ -131,7 +131,8 @@ function HeroRotator({headlines,loading}:{headlines:string[];loading:boolean}){
   );
 }
 
-function DesktopHeader({ active, isScrolled, onNavClick }: {
+function DesktopHeader({ items, active, isScrolled, onNavClick }: {
+  items: typeof navItems;
   active: string;
   isScrolled: boolean;
   onNavClick: (id: string) => void;
@@ -142,7 +143,7 @@ function DesktopHeader({ active, isScrolled, onNavClick }: {
       aria-label="Main navigation"
     >
       <nav>
-        {navItems.map(item => (
+        {items.map(item => (
           <a
             key={item.id}
             href={`#${item.id}`}
@@ -404,6 +405,13 @@ export default function Portfolio({data}:{data:PortfolioData}){
   }, []);
 
   const profile = portfolio.profile;
+  const showExperience = portfolio.experience.length > 0;
+  const showProjects = portfolio.projects.length > 0;
+  const showTestimonials = (portfolio.testimonials?.length ?? 0) > 0;
+  const visibleNav = navItems.filter(i =>
+    (i.id !== 'experience' || showExperience) && (i.id !== 'projects' || showProjects)
+  );
+  const hiddenSections = [...(showExperience ? [] : ['experience']), ...(showProjects ? [] : ['projects'])];
 
   const headlines = useMemo(() => {
     if (Array.isArray(profile?.heroHeadlines) && profile.heroHeadlines.length > 0) {
@@ -715,7 +723,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
       <div className="scroll-progress" ref={progressBarRef}/>
 
       {/* ── Desktop Pill Header (>= 768px) ── */}
-      <DesktopHeader active={active} isScrolled={isScrolled && !loading} onNavClick={onNavClick} />
+      <DesktopHeader items={visibleNav} active={active} isScrolled={isScrolled && !loading} onNavClick={onNavClick} />
 
       {/* ── Mobile Floating Menu (< 768px) ── */}
       <div className="mobile-nav-only">
@@ -750,7 +758,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
             </button>
           </div>
           <nav className="menu-nav-list" aria-label="Main navigation">
-            {navItems.map(item => {
+            {visibleNav.map(item => {
               const NavIcon = getNavIcon(item.label);
               const isActive = active === item.id;
               return (
@@ -811,7 +819,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
             <h2>{profile?.fullName || portfolio.profile.fullName}</h2>
             <div className="hero-actions">
               <a href="#contact">LET&apos;S CONNECT</a>
-              <a href="#projects">VIEW PROJECTS</a>
+              {showProjects&&<a href="#projects">VIEW PROJECTS</a>}
             </div>
           </div>
         </section>
@@ -822,7 +830,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
             <div className="stat-row">{(profile?.stats || portfolio.profile.stats).map(x=><div key={x.label}><strong>{x.value}</strong><span>{x.label}</span></div>)}</div>
           </div>
         </section>
-        <section id="experience" className="page-section">
+        {showExperience&&<section id="experience" className="page-section">
           <SectionHeading plain="Work Experience" accent="PROFESSIONAL JOURNEY!"/>
           <div className="timeline">{portfolio.experience.map((x,i)=>(
             <article className={`experience-card ${i%2?'right':'left'}`} key={x._id}>
@@ -841,8 +849,8 @@ export default function Portfolio({data}:{data:PortfolioData}){
               </div>
             </article>
           ))}</div>
-        </section>
-        <section id="projects" className="page-section">
+        </section>}
+        {showProjects&&<section id="projects" className="page-section">
           <SectionHeading plain="Projects Showcase" accent="WHAT I'VE BUILT!"/>
           <div className="projects-grid">{portfolio.projects.length?portfolio.projects.map((p,i)=>(
             <article className="project-card" key={p._id}>
@@ -853,9 +861,9 @@ export default function Portfolio({data}:{data:PortfolioData}){
               <a className="view-live" href={p.liveUrl} target="_blank" rel="noopener noreferrer"><ArrowUpRight/> VIEW LIVE</a>
             </article>
           )):<div className="empty">Published projects will appear here.</div>}</div>
-        </section>
+        </section>}
         <SkillsMarqueeSection skills={portfolio.skills} />
-        <TestimonialsSection testimonials={portfolio.testimonials} />
+        {showTestimonials&&<TestimonialsSection testimonials={portfolio.testimonials} />}
         <section id="profiles" className="page-section profiles">
           <SectionHeading plain="Web Presence" accent="DEV NETWORK!"/>
           <div className="profile-grid">{portfolio.socialLinks.filter(s=>s.enabled).map(s=>{const I=iconMap[s.icon]||ArrowUpRight;return <a key={s._id} href={s.url} target={s.url.startsWith('http')?'_blank':undefined} rel="noopener noreferrer"><I/><strong>{s.label}</strong><span>{s.icon==='github'?'COMMIT':s.icon==='linkedin'?'CONNECT':'CONTACT'}</span></a>;})}</div>
@@ -871,6 +879,7 @@ export default function Portfolio({data}:{data:PortfolioData}){
         profile={profile || portfolio.profile}
         socialLinks={portfolio.socialLinks}
         role={portfolio.experience[0]?.role}
+        hiddenSections={hiddenSections}
       />
     </div>
   );

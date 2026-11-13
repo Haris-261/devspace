@@ -10,6 +10,9 @@ import './globals.css';
 import './effects.css';
 import './motion.css';
 import './visual-effects.css';
+import WhatsAppButton from '@/components/WhatsAppButton';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const aquire = localFont({
   src: '../fonts/Aquire-Regular.otf',
@@ -125,6 +128,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
           </div>
         </div>
         {children}
+        <Analytics />
+        <SpeedInsights />
+        <WhatsAppButton number={portfolio?.profile?.whatsappNumber} message={portfolio?.profile?.whatsappMessage} />
       </body>
     </html>
   );

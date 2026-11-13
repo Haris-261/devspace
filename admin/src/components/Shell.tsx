@@ -9,6 +9,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  MessageCircle,
   MessageSquareQuote,
   Settings,
   Share2,
@@ -27,6 +28,7 @@ const links = [
   ['/profile', 'Profile', UserRound],
   ['/social-links', 'Social Links', Share2],
   ['/messages', 'Messages', Mail],
+  ['/whatsapp', 'WhatsApp', MessageCircle],
   ['/settings', 'Settings', Settings],
 ] as const;
 
